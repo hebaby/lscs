@@ -42,14 +42,16 @@ const commonSuite = {
 
 var enermySuite = [];
 
+var nowSuite = [];
+
 // 基础随从
 class Suite {
     // 基本属性
     constructor(a,b) {
         this.a = a;
         this.b = b;
-        this.deadLanguage = [];
-        this.firstAction = [];
+        // this.deadLanguage = [];
+        // this.firstAction = [];
     }
 
     // 受到攻击
@@ -58,9 +60,49 @@ class Suite {
             this.a -= a;
         }else {
             // TODO 死亡，触发亡语
+            // this.callDeadLanguage();
+        }
+    }
+
+    // 触发亡语
+    // callDeadLanguage() {
+    //     this.deadLanguage.forEach((cb)=> {
+    //         cb();
+    //     })
+    // }
+
+    // 出发战吼
+    // callFirstAction() {
+    //     this.firstAction.forEach((cb)=> {
+    //         cb();
+    //     })
+    // }
+}
+
+// 高级随从
+// 亡语：对所有随从造成1点攻击
+class primarySuite extends Suite {
+    constructor(a,b,fa=null, dl=null){
+        super(a,b);
+        this.deadLanguage = [];
+        this.firstAction = [];
+
+        if(fa) {
+            this.firstAction.push(fa);
+        };
+        if(dl) {
+            this.deadLanguage.push(dl);
+        }
+    }
+
+    // 收到攻击
+    underAttack(a) {
+        super.underAttack();
+        if(this.a<=a) {
             this.callDeadLanguage();
         }
     }
+
 
     // 触发亡语
     callDeadLanguage() {
@@ -77,18 +119,14 @@ class Suite {
     }
 }
 
-// 高级随从
-// 亡语：对所有随从造成1点攻击
-class primaryStudent extends Suite {
-    constructor(a,b){
-        super(a,b);
-    }
-}
-
 
 // 敌方随从定义
-for(var i=0;i<7;i++){
+for(var i=0;i<6;i++){
     enermySuite.push(new Suite(7,7));
 }
+
+enermySuite.push(new primarySuite(1,1,function(){
+    console.log("hello");
+}))
 
 console.log(enermySuite);
