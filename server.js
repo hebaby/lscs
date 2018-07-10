@@ -1,3 +1,5 @@
+var inquirer = require('inquirer');
+
 var enermy = require('./enermy');
 // 我的牌库
 var card = require('./card');
@@ -43,11 +45,29 @@ function next() {
     if(card.length==0) {
         myBlood --;
     }else {
-        let thisRoundCard = card.unshift();
+        let thisRoundCard = card.shift();
         myCard.push(thisRoundCard);
     }
     nowMoney = maxMoney = round<10? round: 10;
     myGuide.forEach((item)=>{item.active = true});
+    showMap();
+}
+
+// 使用随从
+function useCard(index){
+    if(nowMoney>0){
+        if(index>0&&index<=myCard.length) {
+            let guide = myCard[index-1];
+            myCard.splice(index-1,1);
+            myGuide.push(guide);
+            nowMoney--;
+        }else {
+            console.log("错误的卡牌数字");
+        }
+    }else {
+        console.log("费用不足");
+    }
+    showMap();
 }
 
 // 攻击效果
@@ -59,7 +79,7 @@ function attack(from, to) {
         return;
     }
     // 操作对象判断
-    if(from<0 || from>myGuide.length || myGuide[from-1]) {
+    if(from<0 || from>myGuide.length) {
         console.log('无效操作对象。');
         showMap();
         return;
@@ -67,11 +87,18 @@ function attack(from, to) {
 
     let toGuide = enermy[to-1];
     // 自己攻击
-    if(from === 0 && nowMoney>=2) {
-        toGuide.blood--;
-        checkMap();
-        showMap();
-        return;
+    if(from === 0 ) {
+        if(nowMoney>=2) {
+            toGuide.blood--;
+            nowMoney -=2;
+            checkMap();
+            showMap();
+            return;
+        }else {
+            console.log('费用不足。');
+            showMap();
+            return;
+        }
     }
     // 随从攻击
     if(from !== 0) {
@@ -105,5 +132,51 @@ function checkMap(){
         console.log("敌人已被消灭。")
     }
 }
+
+// 命令执行基本单元
+var promps = [{
+    type: 'input',
+    name: 'command',
+    message: '请输入您要执行的操作'
+}];
+
+
+function commandCB(answer) {
+
+    let answerList = answer.split(' ');
+
+    switch(answerList[0]){
+        case 'exit':
+            return {};
+            break;
+        case 'use':
+            let index = parseFloat(answerList[1]);
+            useCard(index);
+            break;
+        case 'attack':
+            let from = parseFloat(answerList[1]);
+            let to = parseFloat(answerList[2]);
+            attack(from, to);
+            break;
+        case 'showMap':
+            showMap();
+            break;
+        case 'next':
+            next();
+            break;
+        default:
+            console.log('不合法信息');
+            break;
+    }
+    run();
+}
+
+function run() {
+    inquirer.prompt(promps).then(function (answers) {
+        commandCB(answers.command);
+    })
+}
+
+run();
 
 

@@ -1,3 +1,4 @@
+var inquirer = require('inquirer');
 
 const lifeCycle = [
     {
@@ -125,8 +126,32 @@ for(var i=0;i<6;i++){
     enermySuite.push(new Suite(7,7));
 }
 
-enermySuite.push(new primarySuite(1,1,function(){
-    console.log("hello");
-}))
+// enermySuite.push(new primarySuite(1,1,function(){
+//     console.log("hello");
+// }))
 
-console.log(enermySuite);
+// console.log(enermySuite);
+
+// console.log(inquirer);
+
+var promps = [{
+    type: 'input',
+    name: 'command',
+    message: '请输入模块描述'
+}];
+
+function callback(answer) {
+    if(answer.command == 'exit') {
+        return {}
+    }else {
+        test();
+    }
+}
+
+function test() {
+    inquirer.prompt(promps).then(function (answers) {
+        callback(answers);
+    })
+}
+
+test();
