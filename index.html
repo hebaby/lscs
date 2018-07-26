@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="libs/pixi.js"></script>
+    <style>* {padding: 0; margin: 0}</style>
+</head>
+<body>
+<script>
+    let type = "WebGL";
+    let Application = PIXI.Application,
+        Container = PIXI.Container,
+        loader = PIXI.loader,
+        resources = PIXI.loader.resources,
+        TextureCache = PIXI.utils.TextureCache,
+        Sprite = PIXI.Sprite,
+        Rectangle = PIXI.Rectangle;
+    if(!PIXI.utils.isWebGLSupported()){
+        type = "canvas"
+    }
+
+    PIXI.utils.sayHello(type)
+
+    let app = new PIXI.Application({
+        antialias: true,
+        transparent: false,
+        resolution: 1
+    });
+    app.renderer.backgroundColor = 0x061639;
+    document.body.appendChild(app.view);
+
+    app.renderer.view.style.position = "absolute";
+    app.renderer.view.style.display = "block";
+    app.renderer.autoResize = true;
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+
+    let rectangle = new PIXI.Graphics();
+    rectangle.beginFill(0x66CCFF);
+    rectangle.lineStyle(4, 0xFF3300, 1);
+    rectangle.drawRect(50, 50, 100, 150);
+    // app.stage.addChild(rectangle);
+
+    var cardArea, myGuideArea, enermyGuideArea;
+
+    // 初始化分区工作
+    function group() {
+        cardArea = new Container();
+
+        cardArea.x = 96;
+        cardArea.y = 96;
+
+        cardArea.addChild(rectangle);
+        app.stage.addChild(cardArea);
+    }
+
+    group();
+
+
+
+
+</script>
+</body>
+</html>
